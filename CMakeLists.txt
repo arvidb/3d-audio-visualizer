@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 3.0)
 project (AudioVisualCpp)
 
+set(CMAKE_CXX_STANDARD 17)
+
 find_package(OpenGL REQUIRED)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -13,7 +15,13 @@ include_directories(src)
 include_directories(external)
 include_directories(${OPENGL_INCLUDE_DIR})
 
-add_executable(AudioVisualCpp src/main.cpp)
+set(SOURCES 
+   src/main.cpp
+   src/render_object.h
+   src/triangle.h
+   src/common.h
+)
+add_executable(AudioVisualCpp ${SOURCES})
 
 target_link_libraries(AudioVisualCpp glfw)
 target_link_libraries(AudioVisualCpp ${OPENGL_gl_LIBRARY})
