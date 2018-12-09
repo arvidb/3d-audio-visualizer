@@ -18,7 +18,7 @@ include_directories(${OPENGL_INCLUDE_DIR})
 set(SOURCES 
    src/main.cpp
    src/render_object.h
-   src/triangle.h
+   src/cube.h
    src/common.h
 )
 add_executable(AudioVisualCpp ${SOURCES})
