@@ -10,6 +10,7 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(external/glfw)
+add_subdirectory(external/portaudio EXCLUDE_FROM_ALL)
 
 include_directories(src)
 include_directories(external)
@@ -17,6 +18,7 @@ include_directories(${OPENGL_INCLUDE_DIR})
 
 set(SOURCES 
    src/main.cpp
+   src/audio_processor.h
    src/render_object.h
    src/cube.h
    src/common.h
@@ -24,4 +26,6 @@ set(SOURCES
 add_executable(AudioVisualCpp ${SOURCES})
 
 target_link_libraries(AudioVisualCpp glfw)
+target_link_libraries(AudioVisualCpp portaudio_static)
+target_link_libraries(AudioVisualCpp ${OPENGL_gl_LIBRARY})
 target_link_libraries(AudioVisualCpp ${OPENGL_gl_LIBRARY})

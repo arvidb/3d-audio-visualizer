@@ -1,7 +1,10 @@
 #include "cube.h"
+#include "audio_processor.h"
 
 #include <GLFW/glfw3.h>
 #include <iostream>
+
+int screen_width=800, screen_height=600;
 
 static void error_callback(int error, const char* description)
 {
@@ -14,7 +17,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
-int screen_width=800, screen_height=600;
 static void resize_callback(GLFWwindow* window, int width, int height)
 {
     screen_width = width;
@@ -50,22 +52,19 @@ int main(void)
     //glDepthFunc(GL_LESS);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    AudioProcessor audioProcessor;
     
     std::vector<std::unique_ptr<RenderObject>> renderObjects;
-    
-    for (int i=0; i < 10; i++) {
-    
-        auto cube = std::make_unique<Cube>();
-        cube->set_translation(-25.0 + 5.0*i, exp::nullopt, -50.0);
-        renderObjects.emplace_back(std::move(cube));
-    }
+    float lastUpdateTime = 0.0;
+    float lastTime = 0.0;
     
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
         
-        float dt = (float) glfwGetTime();
+        float time = (float) glfwGetTime();
+        float dt = time - lastTime;
         for (auto& obj : renderObjects) {
             obj->update(dt, screen_width, screen_height);
         }
@@ -76,9 +75,33 @@ int main(void)
         
         glfwSwapBuffers(window);
         glfwPollEvents();
+        
+        for (auto& obj : renderObjects) {
+            obj->translate(exp::nullopt, 0, 0.5);
+        }
+        
+        int scaledTime = (int)(time*100.0);
+        if (lastUpdateTime != scaledTime && scaledTime % 1 == 0) {
+            lastUpdateTime = scaledTime;
+            
+            float peak = audioProcessor.get_last_peak_avg();
+            for (int i=0; i < 10; i++) {
+                
+                color_t color = {(float)i * 0.1f, (float)i * 0.1f, 0};
+                auto cube = std::make_unique<Cube>(color);
+                cube->set_translation(-10.0 + 2.0*i, -5.0 + peak * 1000.0, -50.0);
+                renderObjects.emplace_back(std::move(cube));
+            }
+            
+            if (renderObjects.size() > 1000) {
+                int toDelete = renderObjects.size() - 1000;
+                renderObjects.erase(renderObjects.begin(), renderObjects.begin() + toDelete);
+            }
+        }
     }
     
     glfwDestroyWindow(window);
     glfwTerminate();
+    
     exit(EXIT_SUCCESS);
 }

@@ -4,7 +4,7 @@
 
 struct Cube : public RenderObject {
     
-    Cube() {
+    Cube(color_t color) {
         
         this->vertices = {
             // front
@@ -21,15 +21,15 @@ struct Cube : public RenderObject {
         
         this->colors = {
             // front colors
-            {1.0, 0.0, 0.0},
-            {0.0, 1.0, 0.0},
-            {0.0, 0.0, 1.0},
-            {1.0, 1.0, 1.0},
+            color,
+            color,
+            color,
+            color,
             // back colors
-            {1.0, 0.0, 0.0},
-            {0.0, 1.0, 0.0},
-            {0.0, 0.0, 1.0},
-            {1.0, 1.0, 1.0}
+            color,
+            color,
+            color,
+            color
         };
         
         this->elements = {
@@ -53,13 +53,6 @@ struct Cube : public RenderObject {
             6, 7, 3,
         };
 
-
         init();
-    }
-    
-    void update(float dt, int w, int h) override {
-        
-        set_roation(dt);
-        RenderObject::update(dt, w, h);
     }
 };

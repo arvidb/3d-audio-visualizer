@@ -10,3 +10,6 @@
 [submodule "external/linmath"]
 	path = external/linmath
 	url = https://github.com/datenwolf/linmath.h.git
+[submodule "external/portaudio"]
+	path = external/portaudio
+	url = https://git.assembla.com/portaudio.git
