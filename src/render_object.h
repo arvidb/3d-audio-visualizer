@@ -14,6 +14,8 @@ namespace exp = std::experimental;
 class RenderObject {
     
 public:
+    RenderObject() = default;
+    
     ~RenderObject() {
     
         glDeleteProgram(this->program);
@@ -71,11 +73,11 @@ public:
         
         glGenBuffers(1, &vbo_cube_vertices);
         glBindBuffer(GL_ARRAY_BUFFER, vbo_cube_vertices);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_t) * this->vertices.size(), this->vertices.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vector3_t) * this->vertices.size(), this->vertices.data(), GL_STATIC_DRAW);
 
         glGenBuffers(1, &vbo_cube_colors);
         glBindBuffer(GL_ARRAY_BUFFER, vbo_cube_colors);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(color_t) * this->colors.size(), this->colors.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vector3_t) * this->colors.size(), this->colors.data(), GL_STATIC_DRAW);
 
         glGenBuffers(1, &ibo_cube_elements);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_cube_elements);
@@ -115,10 +117,15 @@ public:
         float ratio = w / (float) h;
         
         mat4x4_perspective(this->projection_matrix, 45.0, ratio, 0.1, 100.0);
+        
         mat4x4_identity(this->model_matrix);
-        mat4x4_translate_in_place(this->model_matrix, this->x, this->y, this->z);
+        mat4x4_translate_in_place(this->model_matrix,
+                                  this->position.x,
+                                  this->position.y,
+                                  this->position.z);
         //mat4x4_scale(this->model_matrix, this->model_matrix, 0.1);
         mat4x4_rotate(this->model_matrix, this->model_matrix, 0.5, 0.5, 0.5, this->rotation);
+        
         mat4x4 mvp;
         mat4x4_mul(mvp, this->projection_matrix, this->model_matrix);
         
@@ -131,24 +138,20 @@ public:
     }
     
     void set_translation(exp::optional<float> x, exp::optional<float> y, exp::optional<float> z) {
-        if (x) this->x = x.value_or(0.0);
-        if (y) this->y = y.value_or(0.0);
-        if (z) this->z = z.value_or(0.0);
+        if (x) this->position.x = x.value_or(0.0);
+        if (y) this->position.y = y.value_or(0.0);
+        if (z) this->position.z = z.value_or(0.0);
     }
     
     void translate(exp::optional<float> x, exp::optional<float> y, exp::optional<float> z) {
-        if (x) this->x += x.value_or(0.0);
-        if (y) this->y += y.value_or(0.0);
-        if (z) this->z += z.value_or(0.0);
+        if (x) this->position.x += x.value_or(0.0);
+        if (y) this->position.y += y.value_or(0.0);
+        if (z) this->position.z += z.value_or(0.0);
     }
     
 protected:
     float rotation = {};
-    
-    // TODO: Use vec3 or similar
-    float x = {};
-    float y = {};
-    float z = {};
+    vector3_t position {0,0,0};
     
 protected:
     GLuint program;
@@ -159,8 +162,8 @@ protected:
     GLuint vbo_cube_vertices, vbo_cube_colors;
     GLuint ibo_cube_elements;
     
-    std::vector<vertex_t> vertices;
-    std::vector<color_t> colors;
+    std::vector<vector3_t> vertices;
+    std::vector<vector3_t> colors;
     std::vector<GLushort> elements;
 };
 

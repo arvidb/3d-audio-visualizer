@@ -18,20 +18,18 @@ static const char* fragment_shader_text =
 "    gl_FragColor = vec4(color, 1.0);\n"
 "}\n";
 
-typedef struct vertex
+typedef struct vector3
 {
-    vertex(float x, float y, float z)
+    vector3(float x, float y, float z)
     : x(x), y(y), z(z)
     {}
     
-    float x, y, z;
-} vertex_t;
-
-typedef struct color
-{
-    color(float r, float g, float b)
-    : r(r), g(g), b(b)
-    {}
-    
-    float r, g, b;
-} color_t;
+    union {
+        struct {
+            float x, y, z;
+        };
+        struct {
+            float r, g, b;
+        };
+    };
+} vector3_t;

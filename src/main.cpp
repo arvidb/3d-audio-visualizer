@@ -87,7 +87,7 @@ int main(void)
             float peak = audioProcessor.get_last_peak_avg();
             for (int i=0; i < 10; i++) {
                 
-                color_t color = {(float)i * 0.1f, (float)i * 0.1f, 0};
+                vector3_t color = {(float)i * 0.1f, (float)i * 0.1f, 0};
                 auto cube = std::make_unique<Cube>(color);
                 cube->set_translation(-10.0 + 2.0*i, -5.0 + peak * 1000.0, -50.0);
                 renderObjects.emplace_back(std::move(cube));

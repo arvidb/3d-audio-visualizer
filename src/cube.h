@@ -4,7 +4,7 @@
 
 struct Cube : public RenderObject {
     
-    Cube(color_t color) {
+    Cube(vector3_t color) : RenderObject() {
         
         this->vertices = {
             // front
